@@ -10,7 +10,7 @@ from model import Linear_QNet, QTrainer
 
 MAX_MEMORY = 100_000
 BATCH_SIZE = 1000
-LR = 0.001
+LR = 0.0001
 N_ACTIONS = 3
 MIN_EPSILON = 10
 EPSILON_START = 120
@@ -27,7 +27,7 @@ class Agent:
 
         self.grid_width = WIDTH // BLOCK_SIZE
         self.grid_height = HEIGHT // BLOCK_SIZE
-        self.state_size = 11 + (self.grid_width * self.grid_height)
+        self.state_size = 12 + (self.grid_width * self.grid_height)  # +1 pour la longueur du serpent
 
         self.model = Linear_QNet(self.state_size, HIDDEN_SIZE, N_ACTIONS)
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
@@ -69,7 +69,9 @@ class Agent:
             game.food[0] < head[0],
             game.food[0] > head[0],
             game.food[1] < head[1],
-            game.food[1] > head[1]
+            game.food[1] > head[1],
+            
+            len(game.snake) / 100.0  # Longueur du serpent normalisée
         ]
 
         grid = np.zeros((self.grid_height, self.grid_width), dtype=np.float32)

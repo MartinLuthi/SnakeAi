@@ -1,7 +1,7 @@
 from agent import Agent
 from game import SnakeGame
 
-DEFAULT_MAX_GAMES = 1000
+DEFAULT_MAX_GAMES = 10000
 
 
 def train(max_games: int = DEFAULT_MAX_GAMES) -> None:
