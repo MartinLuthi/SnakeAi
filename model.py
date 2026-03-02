@@ -10,6 +10,13 @@ class Linear_QNet(nn.Module):
         super().__init__()
         self.linear1 = nn.Linear(input_size, hidden_size)
         self.linear2 = nn.Linear(hidden_size, output_size)
+        
+        # Détection et utilisation du GPU si disponible
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.to(self.device)
+        print(f"Modèle initialisé sur: {self.device}")
+        if torch.cuda.is_available():
+            print(f"GPU détecté: {torch.cuda.get_device_name(0)}")
 
     def forward(self, x):
         x = F.relu(self.linear1(x))
@@ -29,10 +36,10 @@ class QTrainer:
         self.criterion = nn.MSELoss()
 
     def train_step(self, state, action, reward, next_state, done):
-        state = torch.as_tensor(np.asarray(state), dtype=torch.float)
-        next_state = torch.as_tensor(np.asarray(next_state), dtype=torch.float)
-        action = torch.as_tensor(np.asarray(action), dtype=torch.long)
-        reward = torch.as_tensor(np.asarray(reward), dtype=torch.float)
+        state = torch.as_tensor(np.asarray(state), dtype=torch.float).to(self.model.device)
+        next_state = torch.as_tensor(np.asarray(next_state), dtype=torch.float).to(self.model.device)
+        action = torch.as_tensor(np.asarray(action), dtype=torch.long).to(self.model.device)
+        reward = torch.as_tensor(np.asarray(reward), dtype=torch.float).to(self.model.device)
 
         if len(state.shape) == 1:
             state = state.unsqueeze(0)
