@@ -7,12 +7,13 @@ DEFAULT_MAX_GAMES = 1000
 def train(max_games: int = DEFAULT_MAX_GAMES) -> None:
     agent = Agent()
     game = SnakeGame()
+    model_path = "models/model.pth"
 
     try:
         while agent.n_games < max_games:
             if not game.is_open():
-                agent.model.save()
-                print("Training stopped: game window closed. Model saved to model.pth")
+                agent.model.save(model_path)
+                print(f"Training stopped: game window closed. Model saved to {model_path}")
                 return
 
             state_old = agent.get_state(game)
@@ -20,8 +21,8 @@ def train(max_games: int = DEFAULT_MAX_GAMES) -> None:
             reward, done, score = game.play_step(final_move)
 
             if not game.is_open():
-                agent.model.save()
-                print("Training stopped: game window closed. Model saved to model.pth")
+                agent.model.save(model_path)
+                print(f"Training stopped: game window closed. Model saved to {model_path}")
                 return
 
             state_new = agent.get_state(game)
@@ -35,12 +36,12 @@ def train(max_games: int = DEFAULT_MAX_GAMES) -> None:
                 agent.train_long_memory()
                 print("Game", agent.n_games, "Score", score)
     except KeyboardInterrupt:
-        agent.model.save()
-        print("Training interrupted. Model saved to model.pth")
+        agent.model.save(model_path)
+        print(f"Training interrupted. Model saved to {model_path}")
         return
 
-    agent.model.save()
-    print(f"Training finished ({agent.n_games}/{max_games} games). Model saved to model.pth")
+    agent.model.save(model_path)
+    print(f"Training finished ({agent.n_games}/{max_games} games). Model saved to {model_path}")
 
 
 if __name__ == "__main__":

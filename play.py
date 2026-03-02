@@ -18,13 +18,13 @@ def play(speed_ms: int = SPEED) -> None:
     
     # Charger le modèle entraîné
     try:
-        agent.model.load_state_dict(torch.load('model.pth'))
+        agent.model.load_state_dict(torch.load('models/model.pth'))
         agent.model.eval()
-        print("Modèle chargé depuis model.pth")
+        print("Modèle chargé depuis models/model.pth")
         print(f"Vitesse: {speed_ms}ms par frame")
         print("Mode: Jeu continu (Ctrl+C pour arrêter)\n")
     except FileNotFoundError:
-        print("Erreur: model.pth introuvable. Entraînez d'abord le modèle avec train.py")
+        print("Erreur: models/model.pth introuvable. Entraînez d'abord le modèle avec train.py")
         return
     
     total_score = 0

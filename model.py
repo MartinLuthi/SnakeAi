@@ -1,4 +1,5 @@
 # model.py
+import os
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -23,7 +24,8 @@ class Linear_QNet(nn.Module):
         x = self.linear2(x)
         return x
 
-    def save(self, file_name="model.pth"):
+    def save(self, file_name="models/model.pth"):
+        os.makedirs(os.path.dirname(file_name) or ".", exist_ok=True)
         torch.save(self.state_dict(), file_name)
 
 
