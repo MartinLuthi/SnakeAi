@@ -10,9 +10,20 @@ def train(max_games: int = DEFAULT_MAX_GAMES) -> None:
 
     try:
         while agent.n_games < max_games:
+            if not game.is_open():
+                agent.model.save()
+                print("Training stopped: game window closed. Model saved to model.pth")
+                return
+
             state_old = agent.get_state(game)
             final_move = agent.get_action(state_old)
             reward, done, score = game.play_step(final_move)
+
+            if not game.is_open():
+                agent.model.save()
+                print("Training stopped: game window closed. Model saved to model.pth")
+                return
+
             state_new = agent.get_state(game)
 
             agent.train_short_memory(state_old, final_move, reward, state_new, done)
