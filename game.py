@@ -19,11 +19,21 @@ class SnakeGame:
     def __init__(self):
         self.window = tk.Tk()
         self.window.title("Snake AI")
+        self.is_running = True
+        self.window.protocol("WM_DELETE_WINDOW", self._on_close)
 
         self.canvas = tk.Canvas(self.window, width=WIDTH, height=HEIGHT, bg="black")
         self.canvas.pack()
 
         self.reset()
+
+    def _on_close(self):
+        self.is_running = False
+        if self.window.winfo_exists():
+            self.window.destroy()
+
+    def is_open(self):
+        return self.is_running and self.window.winfo_exists()
 
     def reset(self):
         self.direction = "RIGHT"
@@ -48,6 +58,9 @@ class SnakeGame:
                 return
 
     def play_step(self, action):
+        if not self.is_open():
+            return REWARD_DEATH, True, self.score
+
         self.frame_iteration += 1
 
         distance_before = abs(self.head[0] - self.food[0]) + abs(self.head[1] - self.food[1])
@@ -75,8 +88,12 @@ class SnakeGame:
             elif distance_after > distance_before:
                 reward += REWARD_FARTHER
 
-        self._update_ui()
-        self.window.update()
+        try:
+            self._update_ui()
+            self.window.update()
+        except tk.TclError:
+            self.is_running = False
+            return REWARD_DEATH, True, self.score
 
         return reward, game_over, self.score
 
